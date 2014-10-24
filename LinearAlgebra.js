@@ -13,7 +13,8 @@
       vector cross(vector,vector) //4D only
       vector multiply(matrix)
       vector multipliedBy(matrix)
-      get/set number norm
+      number getNorm()
+      void setNorm(number)
       get/set number m00 ~ m33
       get/set number xxxx ~ zzzz
     matrix new Matrix(...)
@@ -24,9 +25,9 @@
       vector multiply(vector)
       matrix multipliedBy(matrix)
       vector multipliedBy(vector)
-      get number determinant
-      get matrix transpose
-      get matrix inverse
+      number determinant()
+      matrix transpose()
+      matrix inverse()
       get/set vector rows[0-3]
       get/set vector columns[0-3]
       get/set vector r0 ~ r3
@@ -154,10 +155,12 @@ var Vector,Matrix;
           return e.toFixed(4);
         }).join(",")+")";
       }
-    },norm:{
-      get:function(){
+    },getNorm:{
+      value:function(){
         return sqrt(this.dot(this));
-      },set:function(value){
+      }
+    },setNorm:{
+      value:function(value){
         value/=this.norm;
         this.multiply(isFinite(value)?value:0);
       }
@@ -347,8 +350,8 @@ var Vector,Matrix;
         return new Matrix(result);
       }
     },inverse:{
-      get:function inverse(){
-        var dimension=this.dimension,determinant=this.determinant;
+      value:function inverse(){
+        var dimension=this.dimension,determinant=this.determinant();
         if(determinant==0)Failed("matrix is singular.");
         var result=new Matrix(dimension),odev=dimension%2==0,temp;
         for(var i=0;i<dimension;i++)for(var j=0;j<dimension;j++){
@@ -356,12 +359,12 @@ var Vector,Matrix;
           for(var m=1;m<dimension;m++)for(var n=1;n<dimension;n++)
             temp.push(this.item((i+m)%dimension,(j+n)%dimension));
           temp=new Matrix(temp);
-          result.item(j,i,(odev&&(i+j)%2?-1:1)*temp.determinant/determinant);
+          result.item(j,i,(odev&&(i+j)%2?-1:1)*temp.determinant()/determinant);
         }
         return new Matrix(result);
       }
     },determinant:{
-      get:function determinant(){
+      value:function determinant(){
         switch(this.dimension){
           case 2:return this[0]*this[3]-this[1]*this[2];
           case 3:return (
@@ -382,7 +385,7 @@ var Vector,Matrix;
         };
       }
     },transpose:{
-      get:function transpose(){
+      value:function transpose(){
         var result=new Matrix(this.dimension);
         for(var i=0;i<this.dimension;i++)
           for(var j=0;j<this.dimension;j++)
