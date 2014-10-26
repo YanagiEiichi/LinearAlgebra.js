@@ -379,7 +379,7 @@ var Vector,Matrix;
               for(var j=dimension;j<this.length;j++)
                 if(j%dimension!=i)temp.push(this[j]);
               temp=new Matrix(temp);
-              result+=temp.determinant*this[i]*(i%2?-1:1);
+              result+=temp.determinant()*this[i]*(i%2?-1:1);
             };
             return result;
         };

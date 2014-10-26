@@ -1,0 +1,16 @@
+<script src="LinearAlgebra.js"></script>
+<script>
+var matrix=new Matrix([
+  1,	2,	3,	5,
+  5,	6,	7,	8,
+  9,	10,	11,	12,
+  0,	14,	15,	16
+]);
+matrix=matrix.multiply(matrix);
+var vector=new Vector([
+  1,	2,	3,	4
+]);
+var result=matrix.multiply(vector);
+result=matrix.inverse().multiply(result);
+console.log(result+""==vector+"");
+</script>
