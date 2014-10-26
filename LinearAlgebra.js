@@ -313,7 +313,7 @@ var Vector,Matrix;
           temp=this.slice(i,i+this.dimension).map(function(e){
             return e.toFixed(4);
           });
-          result.push("\t"+temp.join("\t")+"\t");
+          result.push(temp.join("\t"));
         };
         return result.join("\n");
       }
@@ -323,7 +323,7 @@ var Vector,Matrix;
         AssertValue(value);
         this[i*this.dimension+j]=value;
       }
-    },multiply:function multiply(){
+    },multiply:{
       value:function multiply(target){
         if(target instanceof Vector)
           return target.multipliedBy(this);
