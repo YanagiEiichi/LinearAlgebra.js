@@ -106,10 +106,11 @@ var Vector,Matrix;
   /************************** Vector **********************/
   Vector=function(){
     AssertConstructor(this,Vector);
-    var args=flatten(arguments);
+    var args=flatten(arguments),i;
     if(args.length==1){
       AssertDimension(args[0]);
-      args=new Uint8Array(args[0]);
+      args=Array(args[0]);
+      for(var i=0;i<args.length;i++)args[i]=1;
     }else AssertDimension(args.length);
     for(i=0;i<4;i++)this[i]=args[i]||0;
     //Set the dimension of this vector, it can't be change.
