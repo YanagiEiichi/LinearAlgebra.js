@@ -30,9 +30,9 @@
       matrix inverse()
       get/set vector rows[0-3]
       get/set vector columns[0-3]
-      get/set vector r0 ~ r3
-      get/set vector c0 ~ c3
-      get/set number m00 ~ m33
+      get/set vector r1 ~ r4
+      get/set vector c1 ~ c4
+      get/set number m11 ~ m44
     
 ***********************************************************/
 
@@ -162,8 +162,10 @@ var Vector,Matrix;
       }
     },setNorm:{
       value:function(value){
-        value/=this.norm;
-        this.multiply(isFinite(value)?value:0);
+        value/=this.getNorm();
+        value=isFinite(value)?value:0;
+        for(var i=0;i<this.length;i++)
+          this[i]*=value;
       }
     },multiply:{
       value:function multiply(target){
@@ -286,21 +288,21 @@ var Vector,Matrix;
   Matrix.prototype=[];
   (function(){
     for(var i=0;i<4;i++)(function(i){
-      Object.defineProperty(Matrix.prototype,"r"+i,{
+      Object.defineProperty(Matrix.prototype,"r"+(i+1),{
         get:function(){ return this.rows[i]; },
         set:function(e){ this.rows[i]=e; }
       });
-      Object.defineProperty(Matrix.prototype,"c"+i,{
+      Object.defineProperty(Matrix.prototype,"c"+(i+1),{
         get:function(){ return this.columns[i]; },
         set:function(e){ this.columns[i]=e; }
       });
       for(var j=0;j<4;j++)
         (function(i,j){
-          Object.defineProperty(Matrix.prototype,"m"+i+j,{
+          Object.defineProperty(Matrix.prototype,"m"+(j+1)+(i+1),{
             get:function(){return this[i+j*this.dimension];},
             set:function(e){
               AssertValue(e);
-              thisthis[i+j*this.dimension]=e;
+              this[i+j*this.dimension]=e;
             }
           });
         })(i,j);
@@ -334,7 +336,7 @@ var Vector,Matrix;
         var result=[];
         for(var i=0;i<this.dimension;i++)
           for(var j=0;j<this.dimension;j++)
-            result.push(this.columns[i].dot(target.rows[j]));
+            result.push(this.columns[j].dot(target.rows[i]));
         return new Matrix(result);
       }
     },multipliedBy:{
