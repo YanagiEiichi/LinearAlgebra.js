@@ -13,9 +13,8 @@
       vector cross(vector,vector) //4D only
       vector multiply(matrix)
       vector multipliedBy(matrix)
-      number getNorm()
-      void setNorm(number)
-      get/set number m00 ~ m33
+      number norm()
+      vector normalize();
       get/set number xxxx ~ zzzz
     matrix new Matrix(...)
       void toString()
@@ -156,21 +155,21 @@ var Vector,Matrix;
           return e.toFixed(4);
         }).join(",")+")";
       }
-    },getNorm:{
+    },norm:{
       value:function(){
         return sqrt(this.dot(this));
       }
-    },setNorm:{
-      value:function(value){
-        value/=this.getNorm();
-        value=isFinite(value)?value:0;
-        for(var i=0;i<this.length;i++)
-          this[i]*=value;
+    },normalize:{
+      value:function(){
+        var norm=this.norm(),result=new Vector(this);
+        for(var i=0;i<result.length;i++)
+          result[i]/=norm;
+        return result;
       }
     },multiply:{
       value:function multiply(target){
         if(typeof target=="number")
-          Failed("do you want to do `vector.norm*=value`?");
+          Failed("no implementation.");
         if(target instanceof Vector)
           Failed("you should call explicitly `cross` or `dot` methods for the vector multiplication.");
         if(!(target instanceof Matrix))
@@ -184,7 +183,7 @@ var Vector,Matrix;
     },multipliedBy:{
       value:function multipliedBy(target){
         if(typeof target=="number")
-          Failed("do you want to do `vector.norm*=value`?");
+          Failed("no implementation.");
         if(target instanceof Vector)
           Failed("you should call explicitly `cross` or `dot` methods for the vector multiplication.");
         if(!(target instanceof Matrix))
