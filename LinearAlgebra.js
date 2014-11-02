@@ -315,8 +315,16 @@ var Vector,Matrix;
           temp=this.slice(i,i+this.dimension).map(function(e){
             return e.toFixed(4);
           });
-          result.push(temp.join("\t"));
+          result.push(temp);
         };
+        for(var i=0;i<l;i++){
+          var strlen=0;
+          for(var j=0;j<l;j++)
+            strlen=Math.max(result[j][i].length,strlen);
+          for(var j=0;j<l;j++)
+            result[j][i]=Array(strlen-result[j][i].length+1).join(" ")+result[j][i];
+        };
+        for(var i=0;i<l;i++)result[i]=result[i].join("  ");
         return result.join("\n");
       }
     },item:{
