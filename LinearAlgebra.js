@@ -168,9 +168,12 @@ var Vector,Matrix;
       }
     },multiply:{
       value:function multiply(target){
-        if(typeof target=="number")
-          Failed("no implementation.");
-        if(target instanceof Vector)
+        if(typeof target=="number"){
+          var result=new Vector(this);
+          AssertValue(target);
+          for(var i=0;i<this.dimension;i++)result[i]*=target;
+          return result;
+        }if(target instanceof Vector)
           Failed("you should call explicitly `cross` or `dot` methods for the vector multiplication.");
         if(!(target instanceof Matrix))
           Failed("parameter 1 is not of type `Matrix`.");
@@ -183,7 +186,10 @@ var Vector,Matrix;
     },multipliedBy:{
       value:function multipliedBy(target){
         if(typeof target=="number")
-          Failed("no implementation.");
+          var result=new Vector(this);
+          AssertValue(target);
+          for(var i=0;i<this.dimension;i++)result[i]*=target;
+          return result;
         if(target instanceof Vector)
           Failed("you should call explicitly `cross` or `dot` methods for the vector multiplication.");
         if(!(target instanceof Matrix))
