@@ -1,6 +1,6 @@
 ﻿/***********************************************************
   Author: 次碳酸钴 (admin@web-tinker.com)
-  Latest: 2014-10-23
+  Latest: 2014-11-05
   Git: https://github.com/YanagiEiichi/LinearAlgebra
 
   Interface:
@@ -15,7 +15,8 @@
       vector multipliedBy(matrix)
       number norm()
       vector normalize();
-      get/set number xxxx ~ zzzz
+      get/set number x ~ z
+      get/set array xx ~ zzzz
     matrix new Matrix(...)
       void toString()
       void item(int,int,number)
@@ -27,11 +28,20 @@
       number determinant()
       matrix transpose()
       matrix inverse()
-      get/set vector rows[0-3]
-      get/set vector columns[0-3]
-      get/set vector r1 ~ r4
-      get/set vector c1 ~ c4
+      get/set array rows[0-3]
+      get/set array columns[0-3]
+      get/set array r1 ~ r4
+      get/set array c1 ~ c4
       get/set number m11 ~ m44
+
+  Note:
+    None of the property can return a vector or matrix,
+    because it may make mistakes, e.g.
+
+      myMatrix.r1.cross(myVector); //What's the fuck?
+
+      //The correct way here.
+      myMatrix.r1=new Vector(myMatrix.r1).cross(myVector);
     
 ***********************************************************/
 
@@ -130,9 +140,10 @@ var Vector,Matrix;
       if(e.length)Object.defineProperty(Vector.prototype,e.join(""),{
         get:function(){
           if(e.length==1)return this[indexes[e[0]]];
-          for(var values=[],i=0;i<e.length;i++)
+          var values=[];
+          for(var i=0;i<e.length;i++)
             values[i]=this[indexes[e[i]]];
-          return new Vector(values);
+          return new values;
         },set:function(values){
           if(e.length==1){
             AssertValue(values);
@@ -185,12 +196,12 @@ var Vector,Matrix;
       }
     },multipliedBy:{
       value:function multipliedBy(target){
-        if(typeof target=="number")
+        if(typeof target=="number"){
           var result=new Vector(this);
           AssertValue(target);
           for(var i=0;i<this.dimension;i++)result[i]*=target;
           return result;
-        if(target instanceof Vector)
+        }if(target instanceof Vector)
           Failed("you should call explicitly `cross` or `dot` methods for the vector multiplication.");
         if(!(target instanceof Matrix))
           Failed("parameter 1 is not of type `Matrix`.");
@@ -259,9 +270,10 @@ var Vector,Matrix;
       for(var i=0;i<dimension;i++)(function(i){
         Object.defineProperty(columns,i,{
           get:function(){
-            for(var s=[],j=0;j<dimension;j++)
-              s[j]=that[i+j*dimension];
-            return new Vector(s);
+            var values=[];
+            for(var j=0;j<dimension;j++)
+              values[j]=that[i+j*dimension];
+            return values;
           },set:function(e){
             AssertVector(e);
             for(var j=0;j<dimension;j++)
@@ -271,7 +283,7 @@ var Vector,Matrix;
         Object.defineProperty(rows,i,{
           get:function(){
             var start=i*dimension;
-            return new Vector(that.slice(start,start+dimension));
+            return that.slice(start,start+dimension);
           },set:function(e){
             AssertVector(e);
             var start=i*dimension;
@@ -349,7 +361,7 @@ var Vector,Matrix;
         var result=[];
         for(var i=0;i<this.dimension;i++)
           for(var j=0;j<this.dimension;j++)
-            result.push(this.columns[j].dot(target.rows[i]));
+            result.push(new Vector(this.columns[j]).dot(target.rows[i]));
         return new Matrix(result);
       }
     },multipliedBy:{
@@ -362,7 +374,7 @@ var Vector,Matrix;
         var result=[];
         for(var i=0;i<this.dimension;i++)
           for(var j=0;j<this.dimension;j++)
-            result.push(this.rows[i].dot(target.columns[j]));
+            result.push(new Vector(this.rows[i]).dot(target.columns[j]));
         return new Matrix(result);
       }
     },inverse:{
