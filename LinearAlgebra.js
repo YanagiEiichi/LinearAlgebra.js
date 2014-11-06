@@ -247,8 +247,10 @@ var Vector,Matrix;
     },add:{
       value:function add(target){
         AssertVector(target);
-        AssertEqualDimensions(this.length,target.length);
-          for(var i=0;i<this.length;i++)this[i]+=vector[i];
+        var result=new Vector(this);
+        AssertEqualDimensions(result.length,target.length);
+          for(var i=0;i<result.length;i++)result[i]+=target[i];
+        return result;
       }
     }
   });
