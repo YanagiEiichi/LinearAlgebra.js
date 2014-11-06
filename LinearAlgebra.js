@@ -8,9 +8,9 @@
       void toString()
       vector add(vector)
       number dot(vector)
-      vector cross() //2D only
-      vector cross(vector) //3D only
-      vector cross(vector,vector) //4D only
+      vector cross()			//2D only
+      vector cross(vector)		//3D only
+      vector cross(vector,vector)	//4D only
       vector multiply(matrix)
       vector multipliedBy(matrix)
       number norm()
@@ -19,8 +19,10 @@
       get/set array xx ~ zzzz
     matrix new Matrix(...)
       void toString()
-      void item(int,int,number)
-      number item(int,int)
+      void set(int,int,number)
+      void set([int,int],[int,int],array)
+      number get(int,int)
+      array get([int,int],[int,int])
       matrix multiply(matrix)
       vector multiply(vector)
       matrix multipliedBy(matrix)
@@ -345,11 +347,29 @@ var Vector,Matrix;
         for(var i=0;i<l;i++)result[i]=result[i].join("  ");
         return result.join("\n");
       }
-    },item:{
+    },get:{
+      value:function(i,j){
+        if(typeof i=="number"&&typeof j=="number")
+          return this[i*this.dimension+j];
+        if(i.length==2&&j.length==2){
+          var m=j[0],n=j[1],p=i[1],q=i[0];
+          var result=[];
+          for(i=p;i<m;i++)for(j=q;j<n;j++)
+            result.push(matrix.get(i,j));
+          return result;
+        };
+      }
+    },set:{
       value:function(i,j,value){
-        if(value===void 0)return this[i*this.dimension+j];
-        AssertValue(value);
-        this[i*this.dimension+j]=value;
+        if(typeof i=="number"&&typeof j=="number")
+          AssertValue(value),this[i*this.dimension+j]=value;
+        if(i.length==2&&j.length==2){
+          var m=j[0],n=j[1],p=i[1],q=i[0];
+          var l=(p-m)*(q-n)|0,k=0;
+          for(i=0;i<l;i++)AssertValue(value[i]);
+          for(i=p;i<m;i++)for(j=q;j<n;j++)
+            this[i*this.dimension+j]=value[k++];
+        };
       }
     },multiply:{
       value:function multiply(target){
@@ -385,9 +405,9 @@ var Vector,Matrix;
         for(var i=0;i<dimension;i++)for(var j=0;j<dimension;j++){
           temp=[];
           for(var m=1;m<dimension;m++)for(var n=1;n<dimension;n++)
-            temp.push(this.item((i+m)%dimension,(j+n)%dimension));
+            temp.push(this.get((i+m)%dimension,(j+n)%dimension));
           temp=new Matrix(temp);
-          result.item(j,i,(odev&&(i+j)%2?-1:1)*temp.determinant()/determinant);
+          result.set(j,i,(odev&&(i+j)%2?-1:1)*temp.determinant()/determinant);
         }
         return new Matrix(result);
       }
@@ -417,7 +437,7 @@ var Vector,Matrix;
         var result=new Matrix(this.dimension);
         for(var i=0;i<this.dimension;i++)
           for(var j=0;j<this.dimension;j++)
-            result.item(i,j,this.item(j,i));
+            result.set(i,j,this.get(j,i));
         return result;
       }
     }
