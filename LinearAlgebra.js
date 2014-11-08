@@ -378,7 +378,7 @@ var Vector,Matrix;
         if(target instanceof Vector)
           return target.multipliedBy(this);
         if(!(target instanceof Matrix))
-          Failed("parameter 1 is not of type `Matrix`.");
+          Failed("parameter 1 is not of type `Matrix` or `Vector`.");
         AssertEqualDimensions(this.dimension,target.dimension);
         var result=[];
         for(var i=0;i<this.dimension;i++)
@@ -391,7 +391,7 @@ var Vector,Matrix;
         if(target instanceof Vector)
           return target.multiply(this);
         if(!(target instanceof Matrix))
-          Failed("parameter 1 is not of type `Matrix`.");
+          Failed("parameter 1 is not of type `Matrix` or `Vector`.");
         AssertEqualDimensions(this.dimension,target.dimension);
         var result=[];
         for(var i=0;i<this.dimension;i++)
